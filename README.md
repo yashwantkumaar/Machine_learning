@@ -1,4 +1,3 @@
-
 Predict Audience Ratings with Machine Learning
 
 This project predicts audience ratings for movies using machine learning. The pipeline includes data preprocessing, model training, evaluation, and saving the results. The dataset used is "Rotten Tomatoes Movies."
