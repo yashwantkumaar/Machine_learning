@@ -1,0 +1,145 @@
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+import joblib
+import os
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# ------------------ Load the Dataset ------------------
+# Path to the Excel file
+file_path = r"C:\Users\yashg\Videos\INTERN\train\Rotten_Tomatoes_Movies3.xlsx"
+
+# Verify file existence
+if not os.path.exists(file_path):
+    print(f"Error: File '{file_path}' not found. Please check the file path.")
+    exit()
+
+try:
+    # Load the Excel file
+    df = pd.read_excel(file_path)
+    print("Dataset loaded successfully!")
+except Exception as e:
+    print(f"Error loading file: {e}")
+    exit()
+
+# Display dataset information
+print("\nDataset Overview:")
+print(df.head())
+print(df.info())
+
+# ------------------ Preprocess the Data ------------------
+# Drop unnecessary columns (adjust as needed)
+columns_to_drop = [
+    'movie_title', 'movie_info', 'critics_consensus', 'directors',
+    'writers', 'cast', 'studio_name', 'in_theaters_date', 'on_streaming_date'
+]
+df = df.drop(columns=columns_to_drop, errors='ignore')
+
+# Handle missing values
+# Fill missing numeric columns with the mean
+numeric_df = df.select_dtypes(include=[np.number])
+numeric_df = numeric_df.fillna(numeric_df.mean())
+
+# Fill missing categorical columns with the mode (most frequent value)
+categorical_df = df.select_dtypes(exclude=[np.number])
+categorical_df = categorical_df.fillna(categorical_df.mode().iloc[0])
+
+# Recombine the filled numeric and categorical data
+df = pd.concat([numeric_df, categorical_df], axis=1)
+
+# ------------------ Plot Heatmap for Correlation ------------------
+# Calculate correlation matrix after filling missing values
+correlation_matrix = numeric_df.corr()
+
+# Plot the heatmap
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm')
+plt.show()
+
+# ------------------ Feature Selection ------------------
+# Define features (X) and target variable (y)
+feature_columns = ['tomatometer_rating', 'runtime_in_minutes', 'tomatometer_count', 'genre']
+if 'audience_rating' not in df.columns:
+    print("Error: 'audience_rating' column is missing in the dataset.")
+    exit()
+
+X = df[feature_columns]
+y = df['audience_rating']
+
+# Encode categorical features (e.g., 'genre')
+label_encoder = LabelEncoder()
+
+# Apply label encoding to the 'genre' column
+X['genre'] = label_encoder.fit_transform(X['genre'])
+
+# Standardize numerical features
+scaler = StandardScaler()
+X = scaler.fit_transform(X)
+
+# ------------------ Train-Test Split ------------------
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# ------------------ Train the Model ------------------
+print("\nTraining the Linear Regression Model...")
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# ------------------ Evaluate the Model ------------------
+# Make predictions
+y_pred = model.predict(X_test)
+
+# Calculate evaluation metrics
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
+print("\nModel Evaluation:")
+print(f"Mean Squared Error: {mse:.2f}")
+print(f"R2 Score: {r2:.2f}")
+
+# ------------------ Save the Model Pipeline ------------------
+# Save the model and scaler for future use
+model_path = r"C:\Users\yashg\Videos\INTERN\train\linear_regression_model.pkl"
+scaler_path = r"C:\Users\yashg\Videos\INTERN\train\scaler.pkl"
+
+joblib.dump(model, model_path)
+joblib.dump(scaler, scaler_path)
+
+print(f"\nModel saved successfully to: {model_path}")
+print(f"Scaler saved successfully to: {scaler_path}")
+
+# ------------------ Make Predictions on All Data ------------------
+# After loading the model, make predictions on all rows in the dataset
+
+# Apply the scaler to the entire input data (X) for prediction
+X_scaled = scaler.transform(X)
+
+# Make predictions for all rows
+all_predictions = model.predict(X_scaled)
+
+# Add predictions to the dataframe
+df['predicted_audience_rating'] = all_predictions
+
+# Save predictions to a new file or print a sample
+output_file_path = r"C:\Users\yashg\Videos\INTERN\train\predicted_ratings.xlsx"
+df.to_excel(output_file_path, index=False)
+
+print(f"\nPredictions made for all rows. Results saved to: {output_file_path}")
+
+# ------------------ Load and Test the Saved Model ------------------
+# Example of loading the model
+loaded_model = joblib.load(model_path)
+loaded_scaler = joblib.load(scaler_path)
+
+# Test the loaded model with valid feature names
+try:
+    sample_input = pd.DataFrame([[50, 120, 200, 2]], columns=feature_columns)  # Example input
+    sample_input_scaled = loaded_scaler.transform(sample_input)
+    prediction = loaded_model.predict(sample_input_scaled)
+
+    print("\nExample Prediction:")
+    print(f"Predicted Audience Rating: {prediction[0]:.2f}")
+except Exception as e:
+    print(f"Error during prediction: {e}")
