@@ -54,3 +54,7 @@ R2 Score: Indicates how well the model explains the variance in the target varia
 
 This project demonstrates building a machine learning pipeline to predict audience ratings efficiently.
 
+The final output
+![image](https://github.com/user-attachments/assets/bf265c4e-632c-4312-9a63-614a97c65b28)
+
+
