@@ -1,8 +1,8 @@
-Predict Audience Ratings with Machine Learning
+🎥 Predict Audience Ratings with Machine Learning
 
 This project predicts audience ratings for movies using machine learning. The pipeline includes data preprocessing, model training, evaluation, and saving the results. The dataset used is "Rotten Tomatoes Movies."
 
-Features
+🔍 Features
 
 Load data from an Excel file.
 
@@ -16,7 +16,7 @@ Save the trained model and scaler for future use.
 
 Generate predictions for all rows in the dataset and save the results.
 
-Tools and Libraries Used
+🛠️ Tools and Libraries Used
 
 Python
 
@@ -28,7 +28,7 @@ matplotlib, seaborn
 
 joblib
 
-How to Use
+📋 How to Use
 
 Place the dataset in the specified path.
 
@@ -44,7 +44,7 @@ Save predictions and the trained model.
 
 Check the output files for predictions and model artifacts.
 
-Validation
+✅ Validation
 
 The model is validated using:
 
