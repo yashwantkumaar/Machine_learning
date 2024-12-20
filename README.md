@@ -1,7 +1,7 @@
 About Me
 I am a passionate and dedicated individual with a strong foundation in programming and web development, particularly in Python. My journey in technology has been driven by my love for solving complex problems and turning innovative ideas into reality.
 
-In my previous project, I developed a Face Recognition System, where I applied advanced algorithms to achieve accurate detection and recognition. This project allowed me to dive deep into the implementation of cutting-edge technology and gave me hands-on experience in using Python for real-world applications.
+In my previous project, I developed a Face Recognition System, where I applied advanced algorithms to achieve accurate detection and recognition. This project allowed me to dive deep into the implementation of cutting-edge technology and gave me hands-on experience in using Python for real-world applications.Link to the project "https://github.com/yashwantkumaar/smart_attendence.git".
 
 Currently, I am working on my second project in Machine Learning, focusing on predicting audience ratings for movies. This project showcases my ability to preprocess data, build predictive models, and validate their accuracy. It has been an incredible learning experience, solidifying my understanding of machine learning concepts and their practical applications.
 
